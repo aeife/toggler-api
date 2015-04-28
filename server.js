@@ -16,8 +16,10 @@ var mongoose = require('mongoose');
 mongoose.connect('mongodb://localhost:27017/test');
 
 var userApi = require('./app/api/users.js');
+var projectApi = require('./app/api/projects.js');
 app.use('/api/v1', router);
 app.use('/api/v1', userApi);
+app.use('/api/v1', projectApi);
 
 var port = process.env.PORT || 8080;
 app.listen(port);
