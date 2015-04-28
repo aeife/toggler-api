@@ -1,9 +1,11 @@
 var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
+var passport = require('passport');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(passport.initialize());
 
 var router = express.Router();
 router.get('/', function(req, res) {
