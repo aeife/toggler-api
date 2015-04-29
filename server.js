@@ -2,10 +2,17 @@ var express = require('express');
 var app = express();
 var bodyParser = require('body-parser');
 var passport = require('passport');
+var expressSession = require('express-session');
 
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(expressSession({
+    secret: 'toseggsslerion',
+    resave: false,
+    saveUninitialized: false
+}));
 app.use(passport.initialize());
+app.use(passport.session());
 
 var router = express.Router();
 router.get('/', function(req, res) {

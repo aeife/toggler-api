@@ -5,7 +5,7 @@ var auth = require('./auth.js');
 
 var router = express.Router();
 router.route('/users')
-    .get(auth.isAuthenticated, function(req, res) {
+    .get(auth.isLoggedIn, function(req, res) {
         User.find(function(err, users) {
             if (err) {
                 res.send(err);
@@ -27,6 +27,11 @@ router.route('/users')
 
             res.json({ message: 'user added' });
         });
+    });
+
+router.route('/users/login')
+    .post(auth.isAuthLocal, function (req, res) {
+        res.send({message: 'good'});
     });
 
 module.exports = router;

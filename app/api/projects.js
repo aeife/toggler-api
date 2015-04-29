@@ -5,7 +5,7 @@ var auth = require('./auth.js');
 
 var router = express.Router();
 router.route('/projects')
-    .get(auth.isAuthenticated, function(req, res) {
+    .get(auth.isLoggedIn, function(req, res) {
         Project.find({ userId: req.user._id }, function(err, projects) {
             if (err) {
                 res.send(err);
@@ -14,7 +14,7 @@ router.route('/projects')
             res.json(projects);
         });
     })
-    .post(auth.isAuthenticated, function (req, res) {
+    .post(auth.isLoggedIn, function (req, res) {
         var project = new Project({
             name: req.body.name,
             userId: req.user._id
