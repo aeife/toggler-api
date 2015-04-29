@@ -34,4 +34,16 @@ router.route('/users/login')
         res.send({message: 'good'});
     });
 
+router.route('/users/current')
+    .get(auth.isLoggedIn, function (req, res) {
+        console.log(req.user._id);
+        User.find({ _id: req.user._id }, function(err, users) {
+            if (err) {
+                res.send(err);
+            }
+
+            res.json(users);
+        });
+    });
+
 module.exports = router;
