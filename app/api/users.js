@@ -33,7 +33,7 @@ router.route('/users')
 router.route('/users/session')
     // login
     .post(auth.isAuthLocal, function (req, res) {
-        res.send({message: 'good'});
+        res.send(201, {message: 'good'});
     })
     // logout
     .delete(function (req, res) {
