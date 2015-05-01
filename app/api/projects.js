@@ -54,6 +54,10 @@ router.route('/projects/:id')
         }
 
         Project.findById(req.params.id, function (err, project) {
+            if (project.userId != req.user._id) {
+                return res.sendStatus(401);
+            }
+            
             if (err) {
                 return res.send(err);
             }
@@ -63,6 +67,24 @@ router.route('/projects/:id')
             }
 
             res.json(project);
+        });
+    })
+    // update single project
+    .put(auth.isLoggedIn, function (req, res) {
+        Project.findById(req.body._id, function (err, project) {
+            if (project.userId != req.user._id) {
+                return res.sendStatus(401);
+            }
+
+            project.name = req.body.name;
+
+            project.save(function (err) {
+                if (err) {
+                    return res.send(err);
+                }
+
+                res.json({ message: 'project updated' });
+            });
         });
     })
     // delete project
