@@ -5,15 +5,16 @@ var auth = require('./auth.js');
 
 var router = express.Router();
 router.route('/users')
-    .get(auth.isLoggedIn, function(req, res) {
-        User.find(function(err, users) {
-            if (err) {
-                res.send(err);
-            }
-
-            res.json(users);
-        });
-    })
+    // .get(auth.isLoggedIn, function(req, res) {
+    //     User.find(function(err, users) {
+    //         if (err) {
+    //             res.send(err);
+    //         }
+    //
+    //         res.json(users);
+    //     });
+    // })
+    // register new user
     .post(function (req, res) {
         var user = new User({
             username: req.body.username,
@@ -29,20 +30,49 @@ router.route('/users')
         });
     });
 
-router.route('/users/login')
+router.route('/users/session')
+    // login
     .post(auth.isAuthLocal, function (req, res) {
         res.send({message: 'good'});
     });
 
 router.route('/users/current')
+    // fetch current user
     .get(auth.isLoggedIn, function (req, res) {
-        console.log(req.user._id);
-        User.find({ _id: req.user._id }, function(err, users) {
+        User.findById(req.user._id, function(err, user) {
             if (err) {
-                res.send(err);
+                return res.send(err);
             }
 
-            res.json(users);
+            res.json(user);
+        });
+    })
+    .put(auth.isLoggedIn, function (req, res) {
+        User.findById(req.user._id).select('password').exec(function(err, user) {
+            if (err) {
+                return res.send(err);
+            }
+
+            user.verifyPassword(req.body.oldPassword, function (err, match) {
+                if (err) {
+                    return res.send(err);
+                }
+
+                if (!match) {
+                    return res.sendStatus(401);
+                }
+
+                user.password = req.body.password || user.password;
+                user.username = req.body.username || user.username;
+
+                user.save(function (err) {
+                    if (err) {
+                        return res.send(err);
+                    }
+
+                    res.json({ message: 'user updated' });
+                });
+            });
         });
     });
 
