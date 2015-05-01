@@ -33,7 +33,13 @@ router.route('/users')
 router.route('/users/session')
     // login
     .post(auth.isAuthLocal, function (req, res) {
-        res.send(201, {message: 'good'});
+        User.findById(req.user._id, function(err, user) {
+            if (err) {
+                return res.send(err);
+            }
+
+            res.json(user);
+        });
     })
     // logout
     .delete(function (req, res) {
