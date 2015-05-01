@@ -5,6 +5,7 @@ var auth = require('./auth.js');
 
 var router = express.Router();
 router.route('/projects')
+    // get project list
     .get(auth.isLoggedIn, function(req, res) {
         Project
             .find({ userId: req.user._id })
@@ -29,6 +30,7 @@ router.route('/projects')
                 });
             });
     })
+    // create new project
     .post(auth.isLoggedIn, function (req, res) {
         var project = new Project({
             name: req.body.name,
@@ -41,6 +43,54 @@ router.route('/projects')
             }
 
             res.json({ message: 'project added' });
+        });
+    });
+
+router.route('/projects/:id')
+    // get single project
+    .get(auth.isLoggedIn, function (req, res) {
+        if (!req.params.id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.sendStatus(404);
+        }
+
+        Project.findOne({_id: req.params.id}, function (err, project) {
+            if (err) {
+                return res.send(err);
+            }
+
+            if (!project) {
+                return res.sendStatus(404);
+            }
+
+            res.json(project);
+        });
+    })
+    // delete project
+    .delete(auth.isLoggedIn, function (req, res) {
+        if (!id.match(/^[0-9a-fA-F]{24}$/)) {
+            return res.sendStatus(404);
+        }
+
+        Project.findOne({_id: req.params.id}, function (err, project) {
+            if (err) {
+                return res.send(err);
+            }
+
+            if (!project) {
+                return res.sendStatus(404);
+            }
+
+            if (project.userId != req.user._id) {
+                return res.sendStatus(401);
+            }
+
+            project.remove(function (err) {
+                if (err) {
+                    return res.send(err);
+                }
+
+                res.json({ message: 'project deleted' });
+            });
         });
     });
 
