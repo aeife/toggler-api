@@ -34,6 +34,11 @@ router.route('/users/session')
     // login
     .post(auth.isAuthLocal, function (req, res) {
         res.send({message: 'good'});
+    })
+    // logout
+    .delete(function (req, res) {
+        req.logout();
+        res.send({message: 'logged out'});
     });
 
 router.route('/users/current')
