@@ -15,7 +15,18 @@ router.route('/projects')
                     res.send(err);
                 }
 
-                res.json(projects);
+                Project.count(function (err, count) {
+                    if (err) {
+                        res.send(err);
+                    }
+
+                    res.json({
+                        projects: projects,
+                        limit: req.query.limit,
+                        offset: req.query.offset,
+                        count: count
+                    });
+                });
             });
     })
     .post(auth.isLoggedIn, function (req, res) {
