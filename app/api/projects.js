@@ -53,7 +53,7 @@ router.route('/projects/:id')
             return res.sendStatus(404);
         }
 
-        Project.findOne({_id: req.params.id}, function (err, project) {
+        Project.findById(req.params.id, function (err, project) {
             if (err) {
                 return res.send(err);
             }
@@ -71,7 +71,7 @@ router.route('/projects/:id')
             return res.sendStatus(404);
         }
 
-        Project.findOne({_id: req.params.id}, function (err, project) {
+        Project.findById(req.params.id, function (err, project) {
             if (err) {
                 return res.send(err);
             }
