@@ -6,13 +6,17 @@ var auth = require('./auth.js');
 var router = express.Router();
 router.route('/projects')
     .get(auth.isLoggedIn, function(req, res) {
-        Project.find({ userId: req.user._id }, function(err, projects) {
-            if (err) {
-                res.send(err);
-            }
+        Project
+            .find({ userId: req.user._id })
+            .limit(req.query.limit)
+            .skip(req.query.offset)
+            .exec(function(err, projects) {
+                if (err) {
+                    res.send(err);
+                }
 
-            res.json(projects);
-        });
+                res.json(projects);
+            });
     })
     .post(auth.isLoggedIn, function (req, res) {
         var project = new Project({
